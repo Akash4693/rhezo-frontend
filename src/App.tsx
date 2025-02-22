@@ -1,7 +1,4 @@
-import React from "react";
-
 import Login from "./auth/Login";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./auth/Signup";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
@@ -17,41 +14,36 @@ import AddMenu from "./admin/AddMenu";
 import Orders from "./admin/Orders";
 import Success from "./components/Success";
 import { useUserStore } from "./store/useUserStore";
-import { Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import React, { useEffect } from "react";
 import Loading from "./components/Loading";
 import { useThemeStore } from "./store/useThemeStore";
 
-const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user } = useUserStore();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
 
-  if (!user?.isVerified) {
-    return <Navigate to="/verify-email" replace />;
-  }
-  return children;
+const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated, user } = useUserStore();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!user?.isVerified) return <Navigate to="/verify-email" replace />;
+  return <>{children}</>;
 };
 
-const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
+const AuthenticatedUser: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, user } = useUserStore();
-  if (isAuthenticated && user?.isVerified) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
+  if (isAuthenticated && user?.isVerified) return <Navigate to="/" replace />;
+  return <>{children}</>;
 };
-
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+const AdminRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, isAuthenticated } = useUserStore();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  if (!user?.admin) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!user?.admin) return <Navigate to="/" replace />;
+  return <>{children}</>;
 };
 
 const appRouter = createBrowserRouter([
@@ -149,7 +141,7 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  const initializeTheme = useThemeStore((state: any) => state.initializeTheme);
+  const initializeTheme = useThemeStore((state) => state.initializeTheme);
   const { checkAuthentication, isCheckingAuth } = useUserStore();
   // checking auth every time when page is loaded
   useEffect(() => {
