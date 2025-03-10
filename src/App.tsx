@@ -50,9 +50,9 @@ const appRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoutes>
+      // <ProtectedRoutes>
         <MainLayout />
-      </ProtectedRoutes>
+      /* </ProtectedRoutes> */
     ),
     children: [
       {
@@ -141,7 +141,7 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  const initializeTheme = useThemeStore((state) => state.initializeTheme);
+  const initializeTheme = useThemeStore((state: any) => state.initializeTheme);
   const { checkAuthentication, isCheckingAuth } = useUserStore();
   // checking auth every time when page is loaded
   useEffect(() => {
